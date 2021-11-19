@@ -70,7 +70,10 @@ include_directories(
     kendryte-standalone-sdk/lib/nncase/include # for kpu driver
     )
 add_library(bsp ${srcs})
-add_executable(check main.c)
+add_executable(check 
+    main.c
+    amigo_powercfg.c
+    )
 target_link_libraries(check bsp c gloss gcc m)
 
 add_custom_command(TARGET check POST_BUILD
