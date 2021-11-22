@@ -42,8 +42,8 @@ foreach(f ${srcs0})
     list(APPEND srcs kendryte-standalone-sdk/${f})
 endforeach()
 
-set(CMAKE_C_FLAGS "-g -Os -std=gnu11")
-set(CMAKE_CXX_FLAGS "-g -Os -std=gnu++11 -fno-exceptions -fno-rtti")
+set(CMAKE_C_FLAGS "-g -Os -std=gnu11 -fstrict-volatile-bitfields -Wall")
+set(CMAKE_CXX_FLAGS "-g -Os -std=gnu++11 -fno-exceptions -fno-rtti -fstrict-volatile-bitfields -Wall")
 set(CMAKE_EXE_LINKER_FLAGS
     "-Wl,-T -Wl,${CMAKE_CURRENT_LIST_DIR}/kendryte-standalone-sdk/lds/kendryte.ld -Wl,--gc-sections -Wl,-Map,out.map -fuse-ld=bfd -nostdlib"
     )
@@ -73,6 +73,7 @@ add_library(bsp ${srcs})
 add_executable(check 
     main.c
     amigo_powercfg.c
+    amigo_lcd_ips.c
     )
 target_link_libraries(check bsp c gloss gcc m)
 
