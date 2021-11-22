@@ -1,5 +1,6 @@
 #include <bsp.h>
 #include "amigo_powercfg.h"
+#include "amigo_lcd_ips.h"
 
 static int errno;
 
@@ -13,6 +14,10 @@ main(void){
     printf("Hello.\n");
     printf("Init powercfg.\n");
     powercfg_boot();
+    printf("Init LCD.\n");
+    amigo_lcd_ips_boot();
+    printf("Start LCD.\n");
+    amigo_lcd_ips_start();
     printf("Done.\n");
     for(;;){}
     return 0;
