@@ -81,6 +81,9 @@ amigo_lcd_ips_start(void){
     amigo_lcd_ips_cmd(0x11 /* SLEEP_OFF */);
     usleep(100000);
 
+#if 0
+    /* Removed following because fbcp-ili9341 do not do this
+     * and it resolves flickering display (perhaps sort-of power save?) */
     amigo_lcd_ips_cmd(0xF1); /* Unk */
     t[0] = (0x36);
     t[1] = (0x04);
@@ -107,10 +110,11 @@ amigo_lcd_ips_start(void){
     t[1] = (0x04);
     amigo_lcd_ips_data(t, 2);
 
-    amigo_lcd_ips_cmd(0XF9); /* Unk */
+    amigo_lcd_ips_cmd(0xF9); /* Unk */
     t[0] = (0x00);
     t[1] = (0x08);
     amigo_lcd_ips_data(t, 2);
+#endif
 
     amigo_lcd_ips_cmd(0x36); /* Memory Access Control */
     t[0] = (0x28);
