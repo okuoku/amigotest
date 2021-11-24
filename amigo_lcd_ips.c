@@ -37,7 +37,6 @@ amigo_lcd_ips_cmd(unsigned int cmd){
 
 void
 amigo_lcd_ips_data(const unsigned char* data, unsigned long size){
-    uint8_t d;
     dcx_data();
     spi_init(0, SPI_WORK_MODE_0, SPI_FF_OCTAL, 8, 0);
     spi_init_non_standard(0, 8, 0, 0, SPI_AITM_AS_FRAME_FORMAT);
@@ -47,7 +46,6 @@ amigo_lcd_ips_data(const unsigned char* data, unsigned long size){
 
 void
 amigo_lcd_ips_boot(void){
-    int r;
     /* Pin configure */
     fpioa_set_function(36 /* LCD_CS */, FUNC_SPI0_SS3);
     fpioa_set_function(39 /* LCD_WR */, FUNC_SPI0_SCLK);
