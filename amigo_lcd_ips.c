@@ -41,7 +41,7 @@ amigo_lcd_ips_data(const unsigned char* data, unsigned long size){
     spi_init(0, SPI_WORK_MODE_0, SPI_FF_OCTAL, 8, 0);
     spi_init_non_standard(0, 8, 0, 0, SPI_AITM_AS_FRAME_FORMAT);
     spi_send_data_normal_dma(3 /* DMA ch */, 0, 3 /* SS3 */, 
-                             &data, size, SPI_TRANS_CHAR);
+                             data, size, SPI_TRANS_CHAR);
 }
 
 void
@@ -72,104 +72,82 @@ amigo_lcd_ips_start(void){
     rst(1);
     usleep(100000);
 
-    /* From MaixPy */
+    /* 9481 */
     amigo_lcd_ips_cmd(0x01 /* SOFTWARE_RESET */);
     usleep(100000);
+
+
+    amigo_lcd_ips_cmd(0xd1); /* VCOM control */
+    t[0] = 0;
+    amigo_lcd_ips_data(t, 1);
+
+    amigo_lcd_ips_cmd(0xc8 /* gamma */);
+    t[0] = 0;
+    t[1] = 0x30;
+    t[2] = 0x56;
+    t[3] = 0;
+    t[4] = 0;
+    t[5] = 0x8;
+    t[6] = 0x34;
+    t[7] = 0x75;
+    t[8] = 0x77;
+    t[9] = 0;
+    t[10] = 8;
+    t[11] = 0;
+    amigo_lcd_ips_data(t, 12);
+
+    amigo_lcd_ips_cmd(0x21 /* invert */);
 
     amigo_lcd_ips_cmd(0x11 /* SLEEP_OFF */);
     usleep(100000);
 
-#if 0
-    /* Removed following because fbcp-ili9341 do not do this
-     * and it resolves flickering display (perhaps sort-of power save?) */
-    amigo_lcd_ips_cmd(0xF1); /* Unk */
-    t[0] = (0x36);
-    t[1] = (0x04);
-    t[2] = (0x00);
-    t[3] = (0x3C);
-    t[4] = (0x0F);
-    t[5] = (0x8F);
-    amigo_lcd_ips_data(t, 6);
-
-    amigo_lcd_ips_cmd(0xF2); /* Unk */
-    t[0] = (0x18);
-    t[1] = (0xA3);
-    t[2] = (0x12);
-    t[3] = (0x02);
-    t[4] = (0xB2);
-    t[5] = (0x12);
-    t[6] = (0xFF);
-    t[7] = (0x10);
-    t[8] = (0x00);
-    amigo_lcd_ips_data(t, 9);
-
-    amigo_lcd_ips_cmd(0xF8); /* Unk */
-    t[0] = (0x21);
-    t[1] = (0x04);
-    amigo_lcd_ips_data(t, 2);
-
-    amigo_lcd_ips_cmd(0xF9); /* Unk */
-    t[0] = (0x00);
-    t[1] = (0x08);
-    amigo_lcd_ips_data(t, 2);
-#endif
-
-    amigo_lcd_ips_cmd(0x36); /* Memory Access Control */
-    t[0] = (0x28);
-    amigo_lcd_ips_data(t, 1);
-
-    amigo_lcd_ips_cmd(0xB4); /* Display Inversion Control */
-    t[0] = (0x00);
-    amigo_lcd_ips_data(t, 1);
-
-    amigo_lcd_ips_cmd(0xC1); /* Power Control 2 */
-    t[0] = (0x41);
-    amigo_lcd_ips_data(t, 1);
-
-    amigo_lcd_ips_cmd(0xC5); /* Vcom Control */
-    t[0] = (0x00);
-    t[1] = (0x18);
-    amigo_lcd_ips_data(t, 2);
-
-    amigo_lcd_ips_cmd(0xE0); /* Positive Gamma Control */
-    t[0] = (0x0F);
-    t[1] = (0x1F);
-    t[2] = (0x1C);
-    t[3] = (0x0C);
-    t[4] = (0x0F);
-    t[5] = (0x08);
-    t[6] = (0x48);
-    t[7] = (0x98);
-    t[8] = (0x37);
-    t[9] = (0x0A);
-    t[10] = (0x13);
-    t[11] = (0x04);
-    t[12] = (0x11);
-    t[13] = (0x0D);
-    t[14] = (0x00);
-    amigo_lcd_ips_data(t, 15);
-
-    amigo_lcd_ips_cmd(0xE1); /* Negative Gamma Control */
-    t[0] = (0x0F);
-    t[1] = (0x32);
-    t[2] = (0x2E);
-    t[3] = (0x0B);
-    t[4] = (0x0D);
-    t[5] = (0x05);
-    t[6] = (0x47);
-    t[7] = (0x75);
-    t[8] = (0x37);
-    t[9] = (0x06);
-    t[10] = (0x10);
-    t[11] = (0x03);
-    t[12] = (0x24);
-    t[13] = (0x20);
-    t[14] = (0x00);
-    amigo_lcd_ips_data(t, 15);
-
     amigo_lcd_ips_cmd(0x3A); /* Interface Pixel Format */
     t[0] = (0x55);  //RGB565
     amigo_lcd_ips_data(t, 1);
-    /*display on*/
+
     amigo_lcd_ips_cmd(0x29 /* DISPALY_ON ... DISPLAY_ON?? */);
 }
+
+void
+amigo_lcd_ips_push_pix(const void* pix, int pixlen){
+    if(pixlen){
+        amigo_lcd_ips_cmd(0x2c);
+        dcx_data();
+        spi_init(0, SPI_WORK_MODE_0, SPI_FF_OCTAL, 16, 0);
+        spi_init_non_standard(0, 16, 0, 0, SPI_AITM_AS_FRAME_FORMAT);
+        spi_send_data_normal_dma(3 /* DMA ch */, 0, 3 /* SS3 */, 
+                                 pix, pixlen, SPI_TRANS_SHORT);
+    }
+}
+
+void
+amigo_lcd_ips_push_rgnpix(int x, int y, int w, int h, 
+                          const void* pix, int pixlen){
+    unsigned char t[4];
+    unsigned int x1;
+    unsigned int x2;
+    unsigned int y1;
+    unsigned int y2;
+
+    x1 = x;
+    x2 = (x+w)-1; /* Final pixel */
+    y1 = y;
+    y2 = (y+h)-1; /* Final pixel */
+
+    amigo_lcd_ips_cmd(0x2a /* Set X */);
+    t[0] = x1 >> 8;
+    t[1] = x1 & 0xff;
+    t[2] = x2 >> 8;
+    t[3] = x2 & 0xff;
+    amigo_lcd_ips_data(t, 4);
+
+    amigo_lcd_ips_cmd(0x2b /* Set Y */);
+    t[0] = y1 >> 8;
+    t[1] = y1 & 0xff;
+    t[2] = y2 >> 8;
+    t[3] = y2 & 0xff;
+    amigo_lcd_ips_data(t, 4);
+
+    amigo_lcd_ips_push_pix(pix, pixlen);
+}
+
