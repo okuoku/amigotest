@@ -30,8 +30,7 @@ main(void){
             fb[320*2*i + curx*2+1] = 0xff;
         }
         printf("curx = %d, %p, %x\n", curx, fb, (unsigned int)fb[0]);
-        amigo_lcd_ips_push_rgnpix(0,0,320,480,fb, 320*480*2);
-        //for(;;);
+        amigo_lcd_ips_push_rgnpix(0,0,320,480,fb,320*480);
         curx ++;
         if(curx == 320){
             curx = 0;
