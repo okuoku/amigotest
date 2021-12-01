@@ -81,3 +81,6 @@ add_custom_command(TARGET check POST_BUILD
     COMMAND ${CMAKE_OBJCOPY}
     -O binary $<TARGET_FILE:check> $<TARGET_FILE:check>.bin)
 
+# Flash
+# ./kflash.py -p /dev/ttyS12 -b 115200 -B goE -t BIN
+
