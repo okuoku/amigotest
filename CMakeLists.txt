@@ -74,6 +74,7 @@ add_executable(check
     main.c
     amigo_powercfg.c
     amigo_lcd_ips.c
+    amigo_touch.c
     )
 target_link_libraries(check bsp c gloss gcc m)
 
