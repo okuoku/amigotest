@@ -1,3 +1,6 @@
 [submodule "kendryte-standalone-sdk"]
 	path = kendryte-standalone-sdk
 	url = https://github.com/okuoku/kendryte-standalone-sdk
+[submodule "lvgl"]
+	path = lvgl
+	url = https://github.com/lvgl/lvgl
