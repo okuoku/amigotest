@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(amigotest C ASM CXX)
 
+include(./lvgl_srcs.cmake) # => lvgl_srcs
+
 set(srcs0
     lib/bsp/crt.S
     lib/bsp/entry.c
@@ -42,6 +44,7 @@ foreach(f ${srcs0})
     list(APPEND srcs kendryte-standalone-sdk/${f})
 endforeach()
 
+
 set(CMAKE_C_FLAGS "-g -Os -std=gnu11 -fstrict-volatile-bitfields -Wall")
 set(CMAKE_CXX_FLAGS "-g -Os -std=gnu++11 -fno-exceptions -fno-rtti -fstrict-volatile-bitfields -Wall")
 set(CMAKE_EXE_LINKER_FLAGS
@@ -69,6 +72,20 @@ include_directories(
     kendryte-standalone-sdk/lib/utils/include
     kendryte-standalone-sdk/lib/nncase/include # for kpu driver
     )
+
+# LVGL
+include_directories(
+    lvgl
+    )
+add_definitions(-DLV_CONF_INCLUDE_SIMPLE)
+include_directories(cfg)
+set(lvgl_lib_srcs)
+foreach(f ${lvgl_srcs})
+    list(APPEND lvgl_lib_srcs ${CMAKE_CURRENT_LIST_DIR}/lvgl/${f})
+endforeach()
+add_library(lvgl ${lvgl_lib_srcs})
+
+# BSP
 add_library(bsp ${srcs})
 add_executable(check 
     main.c
@@ -76,7 +93,7 @@ add_executable(check
     amigo_lcd_ips.c
     amigo_touch.c
     )
-target_link_libraries(check bsp c gloss gcc m)
+target_link_libraries(check lvgl bsp c gloss gcc m)
 
 add_custom_command(TARGET check POST_BUILD
     COMMAND ${CMAKE_OBJCOPY}

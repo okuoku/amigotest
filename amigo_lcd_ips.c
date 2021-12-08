@@ -105,6 +105,10 @@ amigo_lcd_ips_start(void){
     t[0] = (0x55);  //RGB565
     amigo_lcd_ips_data(t, 1);
 
+    amigo_lcd_ips_cmd(0x36); /* Memory Access Control */
+    t[0] = (1 << 3 /* BGR */ | 1 << 6 /* Invert horizontal */);
+    amigo_lcd_ips_data(t, 1);
+
     amigo_lcd_ips_cmd(0x29 /* DISPALY_ON ... DISPLAY_ON?? */);
 }
 
