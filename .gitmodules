@@ -4,3 +4,6 @@
 [submodule "lvgl"]
 	path = lvgl
 	url = https://github.com/lvgl/lvgl
+[submodule "MaixPy"]
+	path = MaixPy
+	url = https://github.com/sipeed/MaixPy
