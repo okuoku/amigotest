@@ -87,11 +87,18 @@ add_library(lvgl ${lvgl_lib_srcs})
 
 # BSP
 add_library(bsp ${srcs})
+include_directories(
+    MaixPy/components/kendryte_sdk/include
+    )
 add_executable(check 
     main.c
     amigo_powercfg.c
     amigo_lcd_ips.c
     amigo_touch.c
+    amigo_camera.c
+
+    # Special I2C driver from MaixPy
+    MaixPy/components/kendryte_sdk/src/sipeed_i2c.c
     )
 target_link_libraries(check lvgl bsp c gloss gcc m)
 

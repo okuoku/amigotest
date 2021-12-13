@@ -2,6 +2,7 @@
 #include "amigo_powercfg.h"
 #include "amigo_lcd_ips.h"
 #include "amigo_touch.h"
+#include "amigo_camera.h"
 
 #include "sysctl.h" // For tick()
 #include "lvgl.h"
@@ -87,6 +88,8 @@ main(void){
     printf("Start Touch.\n");
     amigo_touch_boot();
     amigo_touch_start();
+    // FIXME: Touch inits I2C
+    amigo_camera_boot();
     printf("Done.\n");
     /* LVGL Init */
     tp = tick();

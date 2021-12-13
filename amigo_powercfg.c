@@ -6,6 +6,7 @@ powercfg_boot(void){
     sysctl_pll_set_freq(SYSCTL_PLL0, 800000000UL);
     sysctl_pll_set_freq(SYSCTL_PLL1, 300000000UL);
     sysctl_pll_set_freq(SYSCTL_PLL2, 45158400UL);
+    sysctl_clock_enable(SYSCTL_CLOCK_AI);
 
     // LCD digital I/O pins
     sysctl_set_power_mode(SYSCTL_POWER_BANK6, SYSCTL_POWER_V18);
